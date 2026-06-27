@@ -3,7 +3,6 @@ import crypto from 'crypto';
 import Razorpay from 'razorpay';
 import prisma from '@/lib/prisma';
 import { sendBookingEmail } from '@/lib/emailService';
-import { appendPaymentToExcel } from '@/lib/excelService';
 
 // Validate Razorpay env variables
 const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
@@ -75,10 +74,7 @@ export async function POST(request: Request) {
         return booking;
       });
 
-      // Append payment to Excel
-      if (updatedBooking.payment) {
-        await appendPaymentToExcel(updatedBooking.payment, updatedBooking);
-      }
+
 
       // Send confirmation email
       try {
