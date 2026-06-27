@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Razorpay from 'razorpay';
 import prisma from '@/lib/prisma';
+import { appendBookingToExcel } from '@/lib/excelService';
 
 // Validate Razorpay env variables
 const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
@@ -133,7 +134,8 @@ export async function POST(request: Request) {
       }
     });
 
-
+    // Append the booking to Excel
+    await appendBookingToExcel(newBooking);
 
     return NextResponse.json({ 
       orderId: order.id, 

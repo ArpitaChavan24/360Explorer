@@ -14,6 +14,7 @@ import 'jspdf-autotable';
 
 const AdminBookings = () => {
   const [bookings, setBookings] = useState<any[]>([]);
+  const [payments, setPayments] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
@@ -43,9 +44,20 @@ const AdminBookings = () => {
     }
   };
 
+  const fetchPayments = async () => {
+    try {
+      const res = await fetch(`/api/admin/payments?status=${filter}`);
+      const data = await res.json();
+      setPayments(data);
+    } catch (err) {
+      console.error('Failed to fetch payments');
+    }
+  };
+
   useEffect(() => {
     fetchStats();
     fetchBookings();
+    fetchPayments();
   }, [filter, search]);
 
   const updateStatus = async (id: string, newStatus: string) => {
@@ -86,6 +98,30 @@ const AdminBookings = () => {
       XLSX.writeFile(workbook, 'bookings.xlsx');
     } catch (err) {
       console.error('Export failed');
+    }
+  };
+
+  const exportPaymentsToExcel = async () => {
+    try {
+      const data = payments.map(p => ({
+        'Transaction ID': p.transactionId || p.paymentId,
+        'Booking ID': p.booking?.bookingId || 'N/A',
+        'Customer Name': p.booking?.fullName || 'N/A',
+        'Payment Method': p.method || 'N/A',
+        'Payment Status': p.status,
+        'Amount': p.amount,
+        'Currency': p.currency || 'INR',
+        'USD Amount': p.usdAmount || 0,
+        'INR Amount': p.inrAmount || 0,
+        'Date': p.paymentDate ? new Date(p.paymentDate).toLocaleDateString() : 'N/A'
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Payments');
+      XLSX.writeFile(workbook, 'payments.xlsx');
+    } catch (err) {
+      console.error('Payment export failed');
     }
   };
 
@@ -161,7 +197,13 @@ const AdminBookings = () => {
               onClick={exportToExcel}
               className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-100 text-[10px] font-black uppercase tracking-widest text-[#1A2B3C] hover:bg-gray-50 transition-all shadow-sm"
             >
-              <FileSpreadsheet className="w-4 h-4 text-green-600" /> Excel
+              <FileSpreadsheet className="w-4 h-4 text-green-600" /> Bookings Excel
+            </button>
+            <button 
+              onClick={exportPaymentsToExcel}
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-100 text-[10px] font-black uppercase tracking-widest text-[#1A2B3C] hover:bg-gray-50 transition-all shadow-sm"
+            >
+              <FileSpreadsheet className="w-4 h-4 text-purple-600" /> Payments Excel
             </button>
             <button 
               onClick={exportToCSV}
