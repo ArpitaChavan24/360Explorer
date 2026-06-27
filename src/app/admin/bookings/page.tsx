@@ -188,7 +188,15 @@ const AdminBookings = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <h1 className="text-4xl font-serif-luxury text-[#1A2B3C] tracking-tight">Booking Management</h1>
+            <div className="flex items-center gap-4">
+              <h1 className="text-4xl font-serif-luxury text-[#1A2B3C] tracking-tight">Booking Management</h1>
+              <a 
+                href="/admin/payments" 
+                className="px-4 py-2 bg-gray-100 text-[10px] font-black uppercase tracking-widest text-[#1A2B3C] hover:bg-gray-200 transition-all"
+              >
+                Go to Payments →
+              </a>
+            </div>
             <p className="text-gray-400 font-bold text-[10px] tracking-[0.2em] uppercase">Monitor and manage all expeditions</p>
           </div>
           
@@ -198,12 +206,6 @@ const AdminBookings = () => {
               className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-100 text-[10px] font-black uppercase tracking-widest text-[#1A2B3C] hover:bg-gray-50 transition-all shadow-sm"
             >
               <FileSpreadsheet className="w-4 h-4 text-green-600" /> Bookings Excel
-            </button>
-            <button 
-              onClick={exportPaymentsToExcel}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-100 text-[10px] font-black uppercase tracking-widest text-[#1A2B3C] hover:bg-gray-50 transition-all shadow-sm"
-            >
-              <FileSpreadsheet className="w-4 h-4 text-purple-600" /> Payments Excel
             </button>
             <button 
               onClick={exportToCSV}
