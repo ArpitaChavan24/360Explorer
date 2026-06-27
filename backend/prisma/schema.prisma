@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  name      String
+  email     String    @unique
+  mobile    String?
+  password  String?
+  role      String    @default("user")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  bookings  Booking[]
+}
+
+model Adventure {
+  id          String          @id
+  title       String
+  price       String
+  location    String
+  rating      Float
+  image       String
+  description String
+  duration    String
+  difficulty  String
+  category    String
+  highlights  String[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  itinerary   ItineraryItem[]
+}
+
+model ItineraryItem {
+  id          String    @id @default(cuid())
+  day         Int
+  title       String
+  description String
+  adventureId String
+  adventure   Adventure @relation(fields: [adventureId], references: [id])
+}
+
+model Booking {
+  id              String     @id @default(cuid())
+  bookingId       String     @unique
+  userId          String?
+  packageId       String
+  packageName     String
+  packagePrice    Float
+  source          String     @default("Website")
+  destination     String
+  travelDate      DateTime
+  travelersCount  Int        @default(1)
+  fullName        String
+  email           String
+  phone           String
+  address         String?
+  city            String?
+  state           String?
+  country         String?
+  pincode         String?
+  specialRequests String?
+  status          String     @default("pending")
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  auditLogs       AuditLog[]
+  user            User?      @relation(fields: [userId], references: [id])
+  payment         Payment?
+  ticket          Ticket?
+  razorpayOrderId String?    @unique
+  paymentAmount    Float?
+  paymentStatus    String     @default("unpaid")
+  paymentGateway  String?    @default("Razorpay")
+  ipAddress        String?
+  paymentId        String?
+  paymentDate      DateTime?
+  transactionId    String?
+  invoiceNumber    String?
+}
+
+model Payment {
+  id             String    @id @default(cuid())
+  paymentId      String?   @unique
+  bookingId      String    @unique
+  transactionId  String?   @unique
+  gatewayOrderId String?   @unique
+  amount         Float
+  currency       String    @default("INR")
+  method         String?
+  status         String    @default("pending")
+  paymentDate    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  inrAmount      Float?
+  usdAmount      Float?
+  booking        Booking   @relation(fields: [bookingId], references: [id])
+}
+
+model Ticket {
+  id           String   @id @default(cuid())
+  ticketNumber String   @unique
+  bookingId    String   @unique
+  status       String   @default("active")
+  issueDate    DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  booking      Booking  @relation(fields: [bookingId], references: [id])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  details   String?
+  bookingId String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+  booking   Booking? @relation(fields: [bookingId], references: [id])
+}
