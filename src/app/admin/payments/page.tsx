@@ -14,7 +14,12 @@ export default function AdminPayments() {
     try {
       setLoading(true);
       const res = await fetch(`/api/admin/payments?status=${filter}`);
-      const data = await res.json();
+      let data = await res.json();
+      
+      // Filter by status (case-insensitive) if not 'all'
+      if (filter !== 'all') {
+        data = data.filter((p: any) => p.status?.toLowerCase() === filter.toLowerCase());
+      }
       
       // Filter by search if needed
       const filtered = search 
@@ -83,9 +88,12 @@ export default function AdminPayments() {
   };
 
   const statusColors: Record<string, string> = {
-    succeeded: 'bg-green-100 text-green-700',
+    successful: 'bg-green-100 text-green-700',
+    SUCCESSFUL: 'bg-green-100 text-green-700',
     failed: 'bg-red-100 text-red-700',
+    FAILED: 'bg-red-100 text-red-700',
     pending: 'bg-yellow-100 text-yellow-700',
+    PENDING: 'bg-yellow-100 text-yellow-700',
     refunded: 'bg-purple-100 text-purple-700'
   };
 
@@ -146,7 +154,7 @@ export default function AdminPayments() {
               className="w-full px-4 py-3 bg-white border border-gray-100 text-sm font-medium text-[#1A2B3C] focus:outline-none focus:border-[#D4A373] transition-all"
             >
               <option value="all">All Payments</option>
-              <option value="succeeded">Succeeded</option>
+              <option value="successful">Succeeded</option>
               <option value="pending">Pending</option>
               <option value="failed">Failed</option>
             </select>
@@ -165,10 +173,10 @@ export default function AdminPayments() {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {[
-            { label: 'Total Revenue', value: payments.filter(p => p.status === 'succeeded').reduce((sum: number, p: any) => sum + (p.inrAmount || p.amount), 0), prefix: '₹', color: 'text-[#D4A373]' },
-            { label: 'Succeeded', value: payments.filter(p => p.status === 'succeeded').length, color: 'text-green-600' },
-            { label: 'Pending', value: payments.filter(p => p.status === 'pending').length, color: 'text-yellow-600' },
-            { label: 'Failed', value: payments.filter(p => p.status === 'failed').length, color: 'text-red-600' }
+            { label: 'Total Revenue', value: payments.filter(p => p.status?.toLowerCase() === 'successful').reduce((sum: number, p: any) => sum + (p.inrAmount || p.amount), 0), prefix: '₹', color: 'text-[#D4A373]' },
+            { label: 'Succeeded', value: payments.filter(p => p.status?.toLowerCase() === 'successful').length, color: 'text-green-600' },
+            { label: 'Pending', value: payments.filter(p => p.status?.toLowerCase() === 'pending').length, color: 'text-yellow-600' },
+            { label: 'Failed', value: payments.filter(p => p.status?.toLowerCase() === 'failed').length, color: 'text-red-600' }
           ].map((stat, idx) => (
             <div key={idx} className="bg-white p-8 border border-gray-100 shadow-sm">
               <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">{stat.label}</p>

@@ -6,11 +6,9 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status') || 'all';
 
-    let where: any = {};
-    if (status !== 'all') {
-      where.status = status;
-    }
-
+    // Note: Prisma doesn't support case-insensitive filtering with MongoDB-like syntax easily,
+    // so we'll fetch all payments and filter client-side (or use a case-insensitive collation if using PostgreSQL)
+    // For simplicity, let's fetch all and filter in memory (since it's admin only)
     const payments = await prisma.payment.findMany({
       include: {
         booking: true,
