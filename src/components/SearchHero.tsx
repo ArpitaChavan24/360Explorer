@@ -104,9 +104,9 @@ const SearchHero = () => {
       </div>
 
       {/* Floating Chat */}
-      <div className="absolute bottom-4 right-4 md:bottom-10 md:right-10 z-20">
+      <div className="fixed bottom-4 right-4 md:bottom-10 md:right-10 z-50">
         <WhatsAppButton 
-          className="bg-[#1A2B3C]/80 backdrop-blur-md text-white px-4 py-3 md:px-6 md:py-4 rounded-xl flex items-center gap-2 md:gap-3 shadow-2xl hover:bg-[#1A2B3C] transition-all"
+          className="bg-[#1A2B3C]/90 backdrop-blur-md text-white px-4 py-3 md:px-6 md:py-4 rounded-xl flex items-center gap-2 md:gap-3 shadow-2xl hover:bg-[#1A2B3C] transition-all"
         >
           <span className="text-xs md:text-sm font-bold uppercase tracking-widest">Chat with us</span>
         </WhatsAppButton>

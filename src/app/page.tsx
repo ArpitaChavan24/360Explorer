@@ -50,9 +50,9 @@ export default function Home() {
 
       {/* All Expeditions Section */}
       <section className="py-16 bg-white">
-        <div className="w-full px-6">
-          <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-8">
-            <div className="space-y-6">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-12 gap-8">
+            <div className="space-y-6 w-full">
               <div className="inline-flex items-center gap-3 bg-[#1A2B3C]/5 text-[#1A2B3C] px-6 py-2 rounded-full text-[8px] font-black tracking-[0.3em] uppercase border border-[#1A2B3C]/10">
                 <Sparkles className="w-3.5 h-3.5 text-[#D4A373]" />
                 All Journeys
